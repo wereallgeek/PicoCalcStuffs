@@ -1,4 +1,4 @@
-# PicoCalc Stuffs I coded in MMBasic (for now)
+# PicoCalc Stuffs coded by [Guidouil](https://github.com/guidouil)
 
 ## DEMO
 
