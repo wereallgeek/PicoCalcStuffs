@@ -1,29 +1,29 @@
 ' keyb.bas - Keyboard testing
-cls
-framebuffer create
-framebuffer write f
-dim v0$(4)=("145","146","147","148","149")
-dim l0$(4)=("F1","F2","F3","F4","F5")
-dim v1$(4)=("27","9","","127","8")
-dim l1$(4)=("Esc","Tab","Cap","Del","Bck")
-dim l2$(6)=("`","/","\","-","=","[","]")
-dim l3$(9)=("1","2","3","4","5","6","7","8","9","0")
-dim l4$(9)=("Q","W","E","R","T","Y","U","I","O","P")
-dim l5$(8)=("A","S","D","F","G","H","J","K","L")
-dim l6$(8)=("Z","X","C","V","B","N","M",",",".")
-dim l7$(1)=(";","'")
-dim xl%(2)=(1,40,1)
-dim yl%(2)=(86,119,150)
-dim xr%(2)=(90,50,90)
-dim yr%(2)=(86,119,150)
-dim xu%(2)=(5,45,85)
-dim yu%(2)=(82,115,82)
-dim xd%(2)=(5,45,85)
-dim yd%(2)=(156,122,156)
-g=rgb(0,255,0)
-b=rgb(0,0,0)
-do
- k$=ucase$(inkey$)
+CLS
+FRAMEBUFFER create
+FRAMEBUFFER write f
+Dim v0$(4)=("145","146","147","148","149")
+Dim l0$(4)=("F1","F2","F3","F4","F5")
+Dim v1$(4)=("27","9","","127","8")
+Dim l1$(4)=("Esc","Tab","Cap","Del","Bck")
+Dim l2$(6)=("`","/","\","-","=","[","]")
+Dim l3$(9)=("1","2","3","4","5","6","7","8","9","0")
+Dim l4$(9)=("Q","W","E","R","T","Y","U","I","O","P")
+Dim l5$(8)=("A","S","D","F","G","H","J","K","L")
+Dim l6$(8)=("Z","X","C","V","B","N","M",",",".")
+Dim l7$(1)=(";","'")
+Dim xl%(2)=(1,40,1)
+Dim yl%(2)=(86,119,150)
+Dim xr%(2)=(90,50,90)
+Dim yr%(2)=(86,119,150)
+Dim xu%(2)=(5,45,85)
+Dim yu%(2)=(82,115,82)
+Dim xd%(2)=(5,45,85)
+Dim yd%(2)=(156,122,156)
+g=RGB(0,255,0)
+b=RGB(0,0,0)
+Do
+ k$=UCase$(Inkey$)
  darrow 149,130,xl%(), yl%(),15,119,k$
  darrow 148,131,xr%(), yr%(),75,119,k$
  darrow 146,128,xu%(), yu%(),46,97,k$
@@ -36,57 +36,62 @@ do
  dline l5$(),8,226,k$
  dline l6$(),8,258,k$
  dline l7$(),1,290,k$,200
- dkey "En",chr$(13),288,226,28,60,k$
+ dkey "En",Chr$(13),288,226,28,60,k$
  dkey "Space"," ",115,290,80,28,k$
- framebuffer copy f,n
- if k$=chr$(27) then cls : end
-loop
+ FRAMEBUFFER copy f,n
+ 'If k$=Chr$(27) Then CLS : End
+ keycode = Asc(k$)
+ If keycode <> 0 Then
+  Print @(0,20) "keycode =      "
+  Print @(80,20) keycode
+ EndIf
+Loop
 
-sub dline a$(),l%,h%,k$,m%
- for i=0 to l%
-  box i*32+m%,h%,28,28,1,g,b
-  text i*32+5+m%,h%+3,a$(i),,3
-  if k$=a$(i) then
-   playkey asc(a$(i))
-   box i*32+m%,h%,28,28,1,g,g
-   text i*32+5+m%,h%+3,a$(i),,3,,b,g
-  endif
- next
-end sub
+Sub dline a$(),l%,h%,k$,m%
+ For i=0 To l%
+  Box i*32+m%,h%,28,28,1,g,b
+  Text i*32+5+m%,h%+3,a$(i),,3
+  If k$=a$(i) Then
+   playkey Asc(a$(i))
+   Box i*32+m%,h%,28,28,1,g,g
+   Text i*32+5+m%,h%+3,a$(i),,3,,b,g
+  EndIf
+ Next
+End Sub
 
-sub dtopline va$(),la$(),l%,h%,k$,m%
- for i=0 to l%
-  box i*45+m%,h%,40,20,1,g,b
-  text i*45+5+m%,h%+5,la$(i)
-  if k$=chr$(val(va$(i))) then
-   playkey asc(va$(i))
-   box i*45+m%,h%,40,20,1,g,g
-   text i*45+5+m%,h%+5,la$(i),,,,b,g
-  endif
- next
-end sub
+Sub dtopline va$(),la$(),l%,h%,k$,m%
+ For i=0 To l%
+  Box i*45+m%,h%,40,20,1,g,b
+  Text i*45+5+m%,h%+5,la$(i)
+  If k$=Chr$(Val(va$(i))) Then
+   playkey Asc(va$(i))
+   Box i*45+m%,h%,40,20,1,g,g
+   Text i*45+5+m%,h%+5,la$(i),,,,b,g
+  EndIf
+ Next
+End Sub
 
-sub dkey la$,va$,x%,y%,w%,h%,k$
- box x%,y%,w%,h%,1,g,b
- text x%+5,y%+5,la$
- if k$=va$ then
-  playkey asc(va$)
-  box x%,y%,w%,h%,1,g,g
-  text x%+5,y%+5,la$,,,,b,g
- endif
-end sub
+Sub dkey la$,va$,x%,y%,w%,h%,k$
+ Box x%,y%,w%,h%,1,g,b
+ Text x%+5,y%+5,la$
+ If k$=va$ Then
+  playkey Asc(va$)
+  Box x%,y%,w%,h%,1,g,g
+  Text x%+5,y%+5,la$,,,,b,g
+ EndIf
+End Sub
 
-sub darrow la%,va%,xx%(),yy%(),x%,y%,k$
- polygon 3,xx%(),yy%(),g,b
- text x%,y%,chr$(la%),cm,1,2
- if k$=chr$(va%) then
+Sub darrow la%,va%,xx%(),yy%(),x%,y%,k$
+ Polygon 3,xx%(),yy%(),g,b
+ Text x%,y%,Chr$(la%),cm,1,2
+ If k$=Chr$(va%) Then
   playkey va%
-  polygon 3,xx%(),yy%(),g,g
-  text x%,y%,chr$(la%),cm,1,2,b,g
- endif
-end sub
+  Polygon 3,xx%(),yy%(),g,g
+  Text x%,y%,Chr$(la%),cm,1,2,b,g
+ EndIf
+End Sub
 
-sub playkey t%
+Sub playkey t%
  t%=t%*12
- play tone t%,t%,100
-end sub
+ Play tone t%,t%,100
+End Sub
