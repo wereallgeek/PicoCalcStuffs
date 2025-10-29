@@ -1,263 +1,263 @@
 ' PicoCalc MOD Player by @Guidouil
-dim fname$(128,2)
+Dim fname$(128,2)
 fcount=0
 sel=0:wl=16:id=0
-black=rgb(0,0,0)
+black=RGB(0,0,0)
 w=MM.HRES
 h=MM.VRES
-green=rgb(0,255,0)
-grey=rgb(80,80,80)
+green=RGB(0,255,0)
+grey=RGB(80,80,80)
 
-function fsz(f$)
- if dir$(f$)="" then
+Function fsz(f$)
+ If Dir$(f$)="" Then
   fsz=0
-  exit function
- endif
- open f$ for input as #1
-  fsz=lof(#1)
- close #1
-end function
+  Exit Function
+ EndIf
+ Open f$ For input As #1
+  fsz=Lof(#1)
+ Close #1
+End Function
 
 intro()
-chdir "modfiles"
+modpath$ = "b:/mod/"
 listfiles()
 filesview()
 
-sub listfiles()
+Sub listfiles()
 'list mod files & size
-file$=dir$("*.mod",FILE)
-do while file$ <> "" and fcount<128
- if left$(file$,1) <> "." then
+file$=Dir$(modpath$ + "*.mod",FILE)
+Do While file$ <> "" And fcount<128
+ If Left$(file$,1) <> "." Then
   fname$(fcount,0)=file$
   fcount=fcount+1
- endif
- file$=dir$()
-loop
-if fcount>0 then
- for i=0 to fcount-1
-  sz=int(fsz(fname$(i,0))/1024)
-  fname$(i,1)=str$(sz)
- next i
-endif
-end sub
+ EndIf
+ file$=Dir$()
+Loop
+If fcount>0 Then
+ For i=0 To fcount-1
+  sz=Int(fsz(modpath$ + fname$(i,0))/1024)
+  fname$(i,1)=Str$(sz)
+ Next i
+EndIf
+End Sub
 
-sub filesview()
-cls black
-if fcount=0 then
- cls green
- color black,green
- font 8,4
- text 160,160,"404: NO MOD FOUND",c
- do
-  if inkey$<>"" then cls :end
- loop
-else
+Sub filesview()
+CLS black
+If fcount=0 Then
+ CLS green
+ Color black,green
+ Font 8,4
+ Text 160,160,"404: NO MOD FOUND",c
+ Do
+  If Inkey$<>"" Then CLS :End
+ Loop
+Else
 'show mod files
-do
+Do
  'window
- font 8,4
- fht=mm.info(fontheight)
- box 0,0,w,fht+10,2,green,grey
- color green,grey
- text w/2,6,"PicoCalc MOD Player",c
- box 0,fht+10,w,h,1,green
- font 8,2
- color black,green
- box 0,h-13,w,13,1,green,green
- text w/2,h-11,"ESC : Quit      ENTER or RIGHT : Play",c
- k$=inkey$
+ Font 8,4
+ fht=MM.Info(fontheight)
+ Box 0,0,w,fht+10,2,green,grey
+ Color green,grey
+ Text w/2,6,"PicoCalc MOD Player",c
+ Box 0,fht+10,w,h,1,green
+ Font 8,2
+ Color black,green
+ Box 0,h-13,w,13,1,green,green
+ Text w/2,h-11,"ESC : Quit      ENTER or RIGHT : Play",c
+ k$=Inkey$
  ' ESC
- if k$=chr$(27) or k$="q" then
-  chdir ".."
-  cls black
-  end
- endif
- if fcount<wl then wl=fcount
- for i=id to min(fcount-1,id+wl)
-  if (fname$(i,0)<>"") then
-  font 7,2
-  fh=mm.info(fontheight)
-  color green,black
-  if i=sel then
-   color black,green
-  end if
+ If k$=Chr$(27) Or k$="q" Then
+  CLS black
+  End
+ EndIf
+ If fcount<wl Then wl=fcount
+ For i=id To Min(fcount-1,id+wl)
+  If (fname$(i,0)<>"") Then
+  Font 7,2
+  fh=MM.Info(fontheight)
+  Color green,black
+  If i=sel Then
+   Color black,green
+  End If
   sho$=fname$(i,0)
-  if len(sho$)>22 then
-   sho$=left$(sho$,22)
-  endif
-  text 2,(i-id)*(fh+1)+36,sho$
-  text 318,(i-id)*(fh+1)+36,fname$(i,1)+"K",r
- endif
- next i
+  If Len(sho$)>22 Then
+   sho$=Left$(sho$,22)
+  EndIf
+  Text 2,(i-id)*(fh+1)+36,sho$
+  Text 318,(i-id)*(fh+1)+36,fname$(i,1)+"K",r
+ EndIf
+ Next i
  ' DOWN
- if k$=chr$(129) and sel<(fcount-1) then
+ If k$=Chr$(129) And sel<(fcount-1) Then
   sel=sel+1
-  if sel>wl then
+  If sel>wl Then
    id=id+1
-   box 0,fht+10,w,h,1,green,black
-  endif
- endif
+   Box 0,fht+10,w,h,1,green,black
+  EndIf
+ EndIf
  ' UP
- if k$=chr$(128) and sel>0 then
+ If k$=Chr$(128) And sel>0 Then
   sel=sel-1
-  if sel<id then
+  If sel<id Then
    id=id-1
-   box 0,toph,w,h,1,green,black
-  endif
- endif
+   Box 0,toph,w,h,1,green,black
+  EndIf
+ EndIf
  ' ENTER or RIGHT
- if k$=chr$(13) or k$=chr$(131) then
+ If k$=Chr$(13) Or k$=Chr$(131) Then
   playerview(fname$(sel,0), fname$(sel,1))
- endif
+ EndIf
 
-loop
-end if
-end sub ' filesview end
+Loop
+End If
+End Sub ' filesview end
 
-sub playerview(f$,s$)
- if val(s$)>192 then
-  cls green
-  color black,green
-  font 7,3
-  text 160,140,s$+"K > 192K",c
-  text 160,180,"FILE TOO BIG ",c
-  pause 1500
-  exit sub
- endif
+Sub playerview(f$,s$)
+ If Val(s$)>192 Then
+  CLS green
+  Color black,green
+  Font 7,3
+  Text 160,140,s$+"K > 192K",c
+  Text 160,180,"FILE TOO BIG ",c
+  Pause 1500
+  Exit Sub
+ EndIf
  ' now playing
  mute(0)
- play modfile f$
- timer =0
+ Play modfile modpath$ + f$
+ Timer =0
  playing=1
- cls black
- font 8,3
- color green,black
- text 160,10,"Now Playing:",c
- font 7,2
- text 160,30,f$+" "+s$+"K",c
- font 7,1
- fh=mm.info(fontheight)
- box 60,70,200,fh*6,1,green
- text 66,75,"ESC or LEFT : Back To List"
- text 66,85,"ENTER : Play / Pause"
- text 66,95,"MINUS (-) : Mute / Unmute"
- text 66,105,"Keys 1 to C : Sample 1 to 32"
+ CLS black
+ Font 8,3
+ Color green,black
+ Text 160,10,"Now Playing:",c
+ Font 7,2
+ Text 160,30,f$+" "+s$+"K",c
+ Font 7,1
+ fh=MM.Info(fontheight)
+ Box 60,70,200,fh*6,1,green
+ Text 66,75,"ESC or LEFT : Back To List"
+ Text 66,85,"ENTER : Play / Pause"
+ Text 66,95,"MINUS (-) : Mute / Unmute"
+ Text 66,105,"Keys 1 to C : Sample 1 to 32"
  showbat()
- do
-  if playing=1 then
-   font 7,2
-   text 160,50,str$(int(timer/1000))+"s",c
-  endif
-  k$=inkey$
+ Do
+  If playing=1 Then
+   Font 7,2
+   Text 160,50,Str$(Int(Timer/1000))+"s",c
+  EndIf
+  k$=Inkey$
   ' ESC or LEFT
-  if k$=chr$(27) or k$=chr$(130) then
-   play stop
-   exit sub
-  endif
+  If k$=Chr$(27) Or k$=Chr$(130) Then
+   Play stop
+   CLS
+   Exit Sub
+  EndIf
   ' ENTER
-  if k$=chr$(13) then
-   font 7,1
-   fh=mm.info(fontheight)
-   if playing=1 then
-    p=timer
-    play pause
+  If k$=Chr$(13) Then
+   Font 7,1
+   fh=MM.Info(fontheight)
+   If playing=1 Then
+    p=Timer
+    Play pause
     playing=0
-    text w,h-fh,"PAUSE",r
-   else
-    timer =p
-    play resume
+    Text w,h-fh,"PAUSE",r
+   Else
+    Timer =p
+    Play resume
     playing=1
-    text w,h-fh,"     ",r
-   endif
-  endif
+    Text w,h-fh,"     ",r
+   EndIf
+  EndIf
   ' - minus
-  if k$=chr$(45) then
-   if muted = 0 then
+  If k$=Chr$(45) Then
+   If muted = 0 Then
     mute(1)
-   else
+   Else
     mute(0)
-   endif
-  endif
+   EndIf
+  EndIf
   ' play samples
-  if playing=1 then
-   if k$="1" then playsamp(1,1,"1")
-   if k$="2" then playsamp(2,2,"2")
-   if k$="3" then playsamp(3,3,"3")
-   if k$="4" then playsamp(4,4,"4")
-   if k$="5" then playsamp(5,1,"5")
-   if k$="6" then playsamp(6,2,"6")
-   if k$="7" then playsamp(7,3,"7")
-   if k$="8" then playsamp(8,4,"8")
-   if k$="9" then playsamp(9,1,"9")
-   if k$="0" then playsamp(10,3,"0")
-   if k$="q" then playsamp(11,4,"Q")
-   if k$="w" then playsamp(12,1,"W")
-   if k$="e" then playsamp(13,2,"E")
-   if k$="r" then playsamp(14,3,"R")
-   if k$="t" then playsamp(15,4,"T")
-   if k$="y" then playsamp(16,1,"Y")
-   if k$="u" then playsamp(17,2,"U")
-   if k$="i" then playsamp(18,3,"I")
-   if k$="o" then playsamp(19,4,"O")
-   if k$="p" then playsamp(20,1,"P")
-   if k$="a" then playsamp(21,2,"A")
-   if k$="s" then playsamp(22,3,"S")
-   if k$="d" then playsamp(23,4,"D")
-   if k$="f" then playsamp(24,1,"F")
-   if k$="g" then playsamp(25,2,"G")
-   if k$="h" then playsamp(26,3,"H")
-   if k$="j" then playsamp(27,4,"J")
-   if k$="k" then playsamp(28,1,"K")
-   if k$="l" then playsamp(29,2,"L")
-   if k$="z" then playsamp(30,3,"Z")
-   if k$="x" then playsamp(31,4,"X")
-   if k$="c" then playsamp(32,1,"C")
-  endif
- loop
-end sub
+  If playing=1 Then
+   If k$="1" Then playsamp(1,1,"1")
+   If k$="2" Then playsamp(2,2,"2")
+   If k$="3" Then playsamp(3,3,"3")
+   If k$="4" Then playsamp(4,4,"4")
+   If k$="5" Then playsamp(5,1,"5")
+   If k$="6" Then playsamp(6,2,"6")
+   If k$="7" Then playsamp(7,3,"7")
+   If k$="8" Then playsamp(8,4,"8")
+   If k$="9" Then playsamp(9,1,"9")
+   If k$="0" Then playsamp(10,3,"0")
+   If k$="q" Then playsamp(11,4,"Q")
+   If k$="w" Then playsamp(12,1,"W")
+   If k$="e" Then playsamp(13,2,"E")
+   If k$="r" Then playsamp(14,3,"R")
+   If k$="t" Then playsamp(15,4,"T")
+   If k$="y" Then playsamp(16,1,"Y")
+   If k$="u" Then playsamp(17,2,"U")
+   If k$="i" Then playsamp(18,3,"I")
+   If k$="o" Then playsamp(19,4,"O")
+   If k$="p" Then playsamp(20,1,"P")
+   If k$="a" Then playsamp(21,2,"A")
+   If k$="s" Then playsamp(22,3,"S")
+   If k$="d" Then playsamp(23,4,"D")
+   If k$="f" Then playsamp(24,1,"F")
+   If k$="g" Then playsamp(25,2,"G")
+   If k$="h" Then playsamp(26,3,"H")
+   If k$="j" Then playsamp(27,4,"J")
+   If k$="k" Then playsamp(28,1,"K")
+   If k$="l" Then playsamp(29,2,"L")
+   If k$="z" Then playsamp(30,3,"Z")
+   If k$="x" Then playsamp(31,4,"X")
+   If k$="c" Then playsamp(32,1,"C")
+  EndIf
+ Loop
+End Sub
 
-sub playsamp(sp%,ch%,key$)
+Sub playsamp(sp%,ch%,key$)
  muting=0
- if muted=1 then mute(0):muting=1
- play modsample sp%,ch%,64
- font 5,6
- fh=mm.info(fontheight)
- text w/2,h-fh,key$,c
- pause 250
- text w/2,h-fh,"  ",c
- if muting=1 then pause 250:mute(1)
+ If muted=1 Then mute(0):muting=1
+ Play modsample sp%,ch%,64
+ Font 5,6
+ fh=MM.Info(fontheight)
+ Text w/2,h-fh,key$,c
+ Pause 250
+ Text w/2,h-fh,"  ",c
+ If muting=1 Then Pause 250:mute(1)
  showbat()
-end sub
+End Sub
 
-sub mute(state)
- font 7,1
- fh=mm.info(fontheight)
- if state=0 then
-  play volume 100,100
+Sub mute(state)
+ Font 7,1
+ fh=MM.Info(fontheight)
+ If state=0 Then
+  Play volume 100,100
   muted=0
-  text 0,h-fh,"    "
- else
-  play volume 0,0
+  Text 0,h-fh,"    "
+ Else
+  Play volume 0,0
   muted=1
-  text 0,h-fh,"MUTE"
- endif
-end sub
+  Text 0,h-fh,"MUTE"
+ EndIf
+End Sub
 
-sub showbat()
- font 7,1
- bat$=str$(mm.info(battery))+"%"
- text w,0,bat$,r
-end sub
+Sub showbat()
+ Font 7,1
+ bat$=Str$(MM.Info(battery))+"%"
+ Text w,0,bat$,r
+End Sub
 
-sub intro()
- font 8,4
- fh=mm.info(fontheight)
- box 0,0,w,fh+10,2,green,grey
- color green,grey
- text w/2,6,"PicoCalc MOD Player",c
- color green,black
- text w/2,h/2,"LOADING...",c
- font 8,2
- fh=mm.info(fontheight)
- text w/2,h-fh,"v0.1 made by Guidouil",c
-end sub
+Sub intro()
+ Font 8,4
+ fh=MM.Info(fontheight)
+ Box 0,0,w,fh+10,2,green,grey
+ Color green,grey
+ Text w/2,6,"PicoCalc MOD Player",c
+ Color green,black
+ Text w/2,h/2,"LOADING...",c
+ Font 8,2
+ fh=MM.Info(fontheight)
+ Text w/2,h-fh,"v0.1 made by Guidouil",c
+End Sub
